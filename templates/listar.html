@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listar EPIs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Lista de EPIs</h2>
+        
+        <!-- Caixa de seleção para ordenação -->
+        <div class="ordenacao">
+            <form method="get" action="{{ url_for('main.listar') }}">
+                <label for="ordem">Ordenar por:</label>
+                <select name="ordem" id="ordem" onchange="this.form.submit()">
+                    <option value="nome" {% if ordem == 'nome' %}selected{% endif %}>Nome</option>
+                    <option value="data_validade" {% if ordem == 'data_validade' %}selected{% endif %}>Data de Validade</option>
+                </select>
+            </form>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Descrição</th>
+                    <th>Quantidade</th>
+                    <th>Data de Validade</th>
+                    <th colspan="2" style="text-align: center;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for epi in epis %}
+                    <tr>
+                        <td>{{ epi.nome }}</td>
+                        <td>{{ epi.descricao }}</td>
+                        <td>{{ epi.quantidade }}</td>
+                        <td>{{ epi.data_validade.strftime('%d/%m/%Y') if epi.data_validade else 'Data não disponível' }}</td>
+                        <td>
+                            <a href="{{ url_for('main.editar', item_id=epi['id']) }}" class="bt-editar">Editar</a>
+                        </td>
+                        <td>
+                            <form action="{{ url_for('main.excluir', item_id=epi['id']) }}" method="post" style="display:inline;">
+                                <button type="submit" class="bt-delete">Excluir</button>
+                            </form>                            
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <a href="{{ url_for('main.index') }}">Voltar</a>
+    </div>
+</body>
+</html>
